@@ -4,6 +4,6 @@ create table users (
     firstname varchar(255),
     lastname varchar(255),
     password varchar(255),
-    role varchar(10),
+    authority varchar(10),
     primary key (id))
 

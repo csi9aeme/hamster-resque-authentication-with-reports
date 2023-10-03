@@ -4,7 +4,7 @@ import hamsterresqueauth.authentication.JwtService;
 import hamsterresqueauth.dto.auth.AuthenticationRequestCommand;
 import hamsterresqueauth.dto.auth.AuthenticationResponse;
 import hamsterresqueauth.dto.auth.RegisterRequestCommand;
-import hamsterresqueauth.enums.Role;
+import hamsterresqueauth.enums.Authorities;
 import hamsterresqueauth.model.User;
 import hamsterresqueauth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class AuthenticationService {
                 .lastname(requestCommand.getLastname())
                 .email(requestCommand.getEmail())
                 .password(passwordEncoder.encode(requestCommand.getPassword()))
-                .role(Role.USER)
+                .authorities(Authorities.USER)
                 .build();
 
         repository.save(user);

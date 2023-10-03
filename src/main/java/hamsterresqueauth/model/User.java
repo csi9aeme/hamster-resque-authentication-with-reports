@@ -1,6 +1,6 @@
 package hamsterresqueauth.model;
 
-import hamsterresqueauth.enums.Role;
+import hamsterresqueauth.enums.Authorities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,7 +32,7 @@ public class User implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Authorities authorities;
 
 
     @Override

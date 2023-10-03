@@ -1,6 +1,5 @@
 package hamsterresqueauth.dto.auth;
 
-import hamsterresqueauth.enums.Role;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
