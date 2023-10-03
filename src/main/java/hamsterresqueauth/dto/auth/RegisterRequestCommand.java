@@ -24,4 +24,18 @@ public class RegisterRequestCommand {
     @NotEmpty(message = "Password cannot be empty!")
     private String password;
 
+    private String phone;
+
+    private String otherContactInfo;
+
+    private String zip;
+
+    private String city;
+
+    private String street;
+
+    private String houseNumber;
+
+    private String otherAddressInfo;
+
 }

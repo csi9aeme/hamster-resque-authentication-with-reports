@@ -5,8 +5,11 @@ import hamsterresqueauth.dto.auth.AuthenticationRequestCommand;
 import hamsterresqueauth.dto.auth.AuthenticationResponse;
 import hamsterresqueauth.dto.auth.RegisterRequestCommand;
 import hamsterresqueauth.enums.Authorities;
-import hamsterresqueauth.model.User;
-import hamsterresqueauth.repository.UserRepository;
+import hamsterresqueauth.model.Address;
+import hamsterresqueauth.model.ContactInfo;
+import hamsterresqueauth.model.LoginInfo;
+import hamsterresqueauth.model.TemporaryHost;
+import hamsterresqueauth.repository.TemporaryHostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,10 +17,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-    private final UserRepository repository;
+
+    private final TemporaryHostRepository repository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -26,17 +32,39 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     
     public AuthenticationResponse register(RegisterRequestCommand requestCommand) {
-        User user = User.builder()
-                .firstname(requestCommand.getFirstname())
-                .lastname(requestCommand.getLastname())
+
+        ContactInfo contactInfo = ContactInfo.builder()
+                .email(requestCommand.getEmail())
+                .phone(requestCommand.getPhone())
+                .otherContactInfo(requestCommand.getOtherContactInfo())
+                .build();
+
+        Address address = Address.builder()
+                .zip(requestCommand.getZip())
+                .city(requestCommand.getCity())
+                .street(requestCommand.getStreet())
+                .houseNumber(requestCommand.getHouseNumber())
+                .otherAddressInfo(requestCommand.getOtherAddressInfo())
+                .build();
+
+        LoginInfo loginInfo = LoginInfo.builder()
                 .email(requestCommand.getEmail())
                 .password(passwordEncoder.encode(requestCommand.getPassword()))
                 .authorities(Authorities.USER)
                 .build();
 
-        repository.save(user);
+        TemporaryHost host = TemporaryHost.builder()
+                .firstname(requestCommand.getFirstname())
+                .lastname(requestCommand.getLastname())
+                .loginInfo(loginInfo)
+                .address(address)
+                .contactInfo(contactInfo)
+                .reports(new HashSet<>())
+                .build();
 
-        String jwtToken = jwtService.generateToken(user);
+        repository.save(host);
+
+        String jwtToken = jwtService.generateToken(loginInfo);
 
         return AuthenticationResponse.builder().token(jwtToken).build();
     }
@@ -48,10 +76,10 @@ public class AuthenticationService {
                         requestCommand.getPassword())
         );
 
-        User user = repository.findByEmail(requestCommand.getEmail())
+        TemporaryHost host = repository.findByEmail(requestCommand.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Invalid username."));
 
-        String jwtToken = jwtService.generateToken(user);
+        String jwtToken = jwtService.generateToken(host.getLoginInfo());
 
         return AuthenticationResponse.builder().token(jwtToken).build();
     }

@@ -1,6 +1,6 @@
 package hamsterresqueauth.configuration;
 
-import hamsterresqueauth.repository.UserRepository;
+import hamsterresqueauth.repository.TemporaryHostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,12 +18,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UserRepository userRepository;
+    private final TemporaryHostRepository repository;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Invalid username"));
+        return username -> repository.findByEmail(username).
+                orElseThrow(() -> new UsernameNotFoundException("Invalid username")).getLoginInfo();
+
     }
 
     @Bean

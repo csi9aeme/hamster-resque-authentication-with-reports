@@ -4,9 +4,11 @@ import hamsterresqueauth.enums.Authorities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 
 @Getter
@@ -14,17 +16,8 @@ import java.util.Collection;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "users")
-public class User implements UserDetails {
-
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    private String firstname;
-
-    private String lastname;
+@Embeddable
+public class LoginInfo implements UserDetails {
 
     @Column(unique = true)
     private String email;
@@ -34,10 +27,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Authorities authorities;
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return List.of(new SimpleGrantedAuthority(authorities.name()));
     }
 
     @Override
