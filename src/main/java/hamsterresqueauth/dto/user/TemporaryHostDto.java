@@ -2,7 +2,7 @@ package hamsterresqueauth.dto.user;
 
 import hamsterresqueauth.dto._etc.AddressDto;
 import hamsterresqueauth.dto._etc.ContactInfoDto;
-import hamsterresqueauth.dto.report.ReportDtoSimple;
+import hamsterresqueauth.dto.report.ReportDto;
 import lombok.*;
 
 import java.util.Set;
@@ -22,6 +22,6 @@ public class TemporaryHostDto {
 
     private AddressDto addressDto;
 
-    private Set<ReportDtoSimple> reportDtos;
+    private Set<ReportDto> reportDtos;
 
 }

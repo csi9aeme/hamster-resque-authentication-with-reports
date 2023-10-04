@@ -1,6 +1,10 @@
 package hamsterresqueauth.dto.report;
 
-import lombok.*;
+import hamsterresqueauth.model.TemporaryHost;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
@@ -8,8 +12,9 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class ReportDtoSimple {
+public class CreateReportCommand {
+
+    private TemporaryHost host;
 
     private String hamsterName;
 
@@ -18,4 +23,5 @@ public class ReportDtoSimple {
     private double weight;
 
     private String reportText;
+
 }

@@ -31,4 +31,12 @@ public class Report {
     @Column(name = "report_text")
     private String reportText;
 
+
+    public Report(TemporaryHost host, String hamsterName, LocalDate dateOfMeasure, double weight, String reportText) {
+        this.host = host;
+        this.hamsterName = hamsterName;
+        this.dateOfMeasure = dateOfMeasure;
+        this.weight = weight;
+        this.reportText = reportText;
+    }
 }
