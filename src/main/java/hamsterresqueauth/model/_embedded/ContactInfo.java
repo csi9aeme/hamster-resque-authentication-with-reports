@@ -1,4 +1,4 @@
-package hamsterresqueauth.model;
+package hamsterresqueauth.model._embedded;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

@@ -15,11 +15,11 @@ import java.time.LocalDate;
 public class Report {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    private TemporaryHost host;
+    private User user;
 
     private String hamsterName;
 
@@ -32,8 +32,8 @@ public class Report {
     private String reportText;
 
 
-    public Report(TemporaryHost host, String hamsterName, LocalDate dateOfMeasure, double weight, String reportText) {
-        this.host = host;
+    public Report(User user, String hamsterName, LocalDate dateOfMeasure, double weight, String reportText) {
+        this.user = user;
         this.hamsterName = hamsterName;
         this.dateOfMeasure = dateOfMeasure;
         this.weight = weight;

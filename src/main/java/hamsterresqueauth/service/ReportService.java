@@ -5,33 +5,35 @@ import hamsterresqueauth.dto.report.ReportDto;
 import hamsterresqueauth.exception.UserNotLoggedInYetException;
 import hamsterresqueauth.mapper.ReportMapper;
 import hamsterresqueauth.model.Report;
-import hamsterresqueauth.model.TemporaryHost;
+import hamsterresqueauth.model.User;
 import hamsterresqueauth.repository.ReportRepository;
-import hamsterresqueauth.repository.TemporaryHostRepository;
-import lombok.RequiredArgsConstructor;
+import hamsterresqueauth.repository.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReportService {
-    private final ReportRepository reportRepository;
+    private  ReportRepository reportRepository;
 
-    private final TemporaryHostRepository hostRepository;
+    private UserRepository hostRepository;
 
-    private final ReportMapper reportMapper;
+    private  ReportMapper reportMapper;
 
     public ReportDto createReport(CreateReportCommand command) {
 
         String hostEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
         if(hostEmail != null) {
-            TemporaryHost loggedInHost = hostRepository.findByEmail(hostEmail).orElseThrow();
+            User loggedInHost = hostRepository.findByEmail(hostEmail).orElseThrow();
 
             Report report = Report.builder()
-                    .host(loggedInHost)
+                    .user(loggedInHost)
                     .dateOfMeasure(LocalDate.now())
                     .hamsterName(command.getHamsterName())
                     .weight(command.getWeight())

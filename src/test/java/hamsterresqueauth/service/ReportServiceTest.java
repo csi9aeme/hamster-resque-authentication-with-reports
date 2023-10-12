@@ -2,13 +2,15 @@ package hamsterresqueauth.service;
 
 import hamsterresqueauth.dto.report.CreateReportCommand;
 import hamsterresqueauth.dto.report.ReportDto;
-import hamsterresqueauth.enums.Authorities;
 import hamsterresqueauth.exception.UserNotLoggedInYetException;
 import hamsterresqueauth.mapper.ReportMapper;
-import hamsterresqueauth.mapper.TemporaryHostMapper;
+import hamsterresqueauth.mapper.UserMapper;
 import hamsterresqueauth.model.*;
+import hamsterresqueauth.model._embedded.Address;
+import hamsterresqueauth.model._embedded.ContactInfo;
+import hamsterresqueauth.model._embedded.LoginInfo;
 import hamsterresqueauth.repository.ReportRepository;
-import hamsterresqueauth.repository.TemporaryHostRepository;
+import hamsterresqueauth.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +22,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 
@@ -34,7 +37,7 @@ import static org.mockito.Mockito.*;
 public class ReportServiceTest {
 
     @Mock
-    TemporaryHostRepository hostRepository;
+    UserRepository hostRepository;
 
     @Mock
     ReportRepository reportRepository;
@@ -49,13 +52,13 @@ public class ReportServiceTest {
     Authentication authentication;
 
     @Mock
-    TemporaryHostMapper hostMapper;
+    UserMapper hostMapper;
 
     @InjectMocks
     ReportService reportService;
 
     String psw = "$2a$12$30kIOBsIYZpbZa3kazwbQuiHq5ISEpLguZ449pzn.vLqGTjdrJ0LS";
-    TemporaryHost host;
+    User user;
     LoginInfo loginInfo;
     ContactInfo contactInfo;
     Address address;
@@ -63,10 +66,10 @@ public class ReportServiceTest {
 
     @BeforeEach
     void init() {
-        loginInfo = new LoginInfo("valami@gmail.com", psw, Authorities.USER);
+        loginInfo = new LoginInfo("valami@gmail.com", psw);
         address = new Address("1191", "Budapest", "Békés utca", "21", "2/7");
         contactInfo = new ContactInfo(loginInfo.getEmail(), "+36201112222", "skype");
-        host = new TemporaryHost(1L, "Elemér", "Megyek", loginInfo, contactInfo, address, new HashSet<>());
+        user = new User(1L, "Elemér", "Megyek", loginInfo, contactInfo, address, new HashSet<>(), new ArrayList<>());
 
 
     }
@@ -75,15 +78,15 @@ public class ReportServiceTest {
     void testCreateReport() {
         String email = "valami@gmail.com";
         ReportDto reportDto = new ReportDto("Mütyürke", LocalDate.now(), 37, "Some information about the hamster.");
-        CreateReportCommand command = new CreateReportCommand(host, "Hamster", LocalDate.now(), 10, "Test report");
-        report = new Report(host, "Mütyürke", LocalDate.now(), 37, "Some information about the hamster.");
+        CreateReportCommand command = new CreateReportCommand(user, "Hamster", LocalDate.now(), 10, "Test report");
+        report = new Report(user, "Mütyürke", LocalDate.now(), 37, "Some information about the hamster.");
 
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getName()).thenReturn(email);
 
         SecurityContextHolder.setContext(securityContext);
 
-        when(hostRepository.findByEmail(email)).thenReturn(Optional.of(host));
+        when(hostRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
         when(reportMapper.toReportDto((Report) any())).thenReturn(reportDto);
 
@@ -98,7 +101,7 @@ public class ReportServiceTest {
 
     @Test
     void testUserNotLoggedIn() {
-        CreateReportCommand command = new CreateReportCommand(host, "Hamster", LocalDate.now(), 10, "Test report");
+        CreateReportCommand command = new CreateReportCommand(user, "Hamster", LocalDate.now(), 10, "Test report");
 
         String error = "User not logged in yet!";
 

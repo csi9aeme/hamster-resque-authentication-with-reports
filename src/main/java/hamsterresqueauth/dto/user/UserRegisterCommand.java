@@ -1,4 +1,4 @@
-package hamsterresqueauth.dto.auth;
+package hamsterresqueauth.dto.user;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RegisterRequestCommand {
+public class UserRegisterCommand {
 
     @NotEmpty(message = "Firstname cannot be empty!")
     private String firstname;
